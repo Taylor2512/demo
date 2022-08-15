@@ -5,12 +5,22 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.*;
+import io.swagger.v3.oas.*;
+import io.swagger.v3.oas.annotations.media.*;
+import io.swagger.v3.oas.annotations.responses.*;
 
 import com.puertto.demo.model.Employee;
 
 @RestController
+
 public class TaskController {
     private List<Employee> employees = createList();
+
+    @Operation(summary = "Get thing", responses = {
+            @ApiResponse(description = "Successful Operation", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class))),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Authentication Failure", content = @Content(schema = @Schema(hidden = true))) })
 
     @RequestMapping(value = "/employees", method = RequestMethod.GET, produces = "application/json")
     public List<Employee> firstPage() {
@@ -30,6 +40,7 @@ public class TaskController {
         return deletedEmp;
     }
 
+    // @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     @PostMapping
     public Employee create(@RequestBody Employee user) {
         employees.add(user);
